@@ -20,7 +20,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #fff;
+      background: #ffffff;
     }
 
     body {
@@ -34,10 +34,12 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: #fff;
+      background: #ffffff;
     }
 
-    /* INTRO COVER */
+    /* -----------------------------
+       INTRO COVER
+    ----------------------------- */
 
     #introCover {
       position: absolute;
@@ -49,9 +51,11 @@
 
       z-index: 20;
 
+      transform: translateX(0);
+
       transition:
-        opacity .55s ease,
-        transform .85s cubic-bezier(.22,.8,.3,1);
+        transform 1.05s cubic-bezier(.22,.8,.25,1),
+        opacity .55s ease;
     }
 
     #introCover img {
@@ -59,29 +63,49 @@
       height: auto;
       display: block;
 
-      transform: rotate(-4deg);
-      transform-origin: center center;
-
       cursor: pointer;
 
+      transform:
+        rotate(-4deg)
+        scale(1);
+
+      transform-origin: center center;
+
       transition:
-        transform .75s cubic-bezier(.22,.8,.3,1);
+        transform .9s cubic-bezier(.22,.8,.25,1);
     }
 
     #introCover:hover img {
-      transform: rotate(-2deg) scale(1.02);
+      transform:
+        rotate(-2deg)
+        scale(1.025);
     }
 
+    /* first click: straighten */
+
     #introCover.straight img {
-      transform: rotate(0deg) scale(1);
+      transform:
+        rotate(0deg)
+        scale(.98);
     }
+
+    /* then glide left */
+
+    #introCover.shift-left {
+      transform:
+        translateX(-16vw);
+    }
+
+    /* fade the intro away */
 
     #introCover.hide {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* FLIPBOOK */
+    /* -----------------------------
+       REAL FLIPBOOK
+    ----------------------------- */
 
     #bookStage {
       position: absolute;
@@ -96,12 +120,17 @@
       opacity: 0;
       pointer-events: none;
 
-      transition: opacity .6s ease;
+      transform: scale(.985);
+
+      transition:
+        opacity .65s ease,
+        transform .8s cubic-bezier(.22,.8,.25,1);
     }
 
     #bookStage.visible {
       opacity: 1;
       pointer-events: auto;
+      transform: scale(1);
     }
 
     #book {
@@ -110,20 +139,27 @@
     }
 
     .page {
-      background: #fff;
+      background: #ffffff;
       overflow: hidden;
     }
 
     .page img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+
       display: block;
-      background: #fff;
+
+      object-fit: contain;
+
+      background: #ffffff;
 
       user-select: none;
       -webkit-user-drag: none;
     }
+
+    /* -----------------------------
+       MOBILE
+    ----------------------------- */
 
     @media (max-width: 800px) {
 
@@ -131,9 +167,15 @@
         width: min(72vw, 520px);
       }
 
+      #introCover.shift-left {
+        transform:
+          translateX(-10vw);
+      }
+
       #bookStage {
         padding: 3vh 2vw;
       }
+
     }
 
   </style>
@@ -143,11 +185,18 @@
 
   <div class="viewer">
 
+    <!-- INTRO COVER -->
+
     <div id="introCover">
+
       <img
         src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg"
         alt="Portfolio cover">
+
     </div>
+
+
+    <!-- REAL BOOK -->
 
     <div id="bookStage">
 
@@ -355,6 +404,7 @@
 
   </div>
 
+
   <script>
 
     const introCover =
@@ -424,22 +474,61 @@
 
       opened = true;
 
+
+      /*
+      STEP 1:
+      straighten
+      */
+
       introCover.classList.add("straight");
+
+
+      /*
+      STEP 2:
+      glide left
+      */
 
       setTimeout(() => {
 
-        introCover.classList.add("hide");
+        introCover.classList.add("shift-left");
+
+      }, 280);
+
+
+      /*
+      STEP 3:
+      reveal actual book
+      */
+
+      setTimeout(() => {
 
         bookStage.classList.add("visible");
 
       }, 650);
 
 
+      /*
+      STEP 4:
+      fade intro away
+      */
+
+      setTimeout(() => {
+
+        introCover.classList.add("hide");
+
+      }, 900);
+
+
+      /*
+      STEP 5:
+      open first page
+      */
+
       setTimeout(() => {
 
         pageFlip.flipNext("bottom");
 
-      }, 1100);
+      }, 1150);
 
     }
 
@@ -460,7 +549,9 @@
             event.key === "Enter" ||
             event.key === "ArrowRight"
           ) {
+
             openPortfolio();
+
           }
 
           return;
@@ -468,11 +559,16 @@
 
 
         if (event.key === "ArrowRight") {
+
           pageFlip.flipNext("bottom");
+
         }
 
+
         if (event.key === "ArrowLeft") {
+
           pageFlip.flipPrev("bottom");
+
         }
 
       }
