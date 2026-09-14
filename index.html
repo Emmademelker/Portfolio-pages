@@ -15,17 +15,10 @@
     html,
     body {
       margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #fff;
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .viewer {
@@ -36,7 +29,9 @@
       background: #fff;
     }
 
-    /* INTRO COVER */
+    /* --------------------------------
+       INTRO COVER
+    -------------------------------- */
 
     #introCover {
       position: absolute;
@@ -44,12 +39,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 20;
-
-      opacity: 1;
-
-      transition:
-        opacity .45s ease;
+      z-index: 30;
+      pointer-events: auto;
     }
 
     #introCover img {
@@ -60,33 +51,49 @@
       cursor: pointer;
 
       transform:
+        translateX(0)
         rotate(-4deg)
         scale(1);
 
       transform-origin: center center;
 
       transition:
-        transform .8s cubic-bezier(.22,.8,.25,1);
+        transform 1.05s cubic-bezier(.22,.8,.25,1),
+        opacity .35s ease;
     }
 
     #introCover:hover img {
       transform:
+        translateX(0)
         rotate(-2deg)
         scale(1.02);
     }
 
-    #introCover.straight img {
+    /*
+      Once clicked:
+      move RIGHT by half the cover width.
+      Because the cover width itself is responsive,
+      we use 21vw, capped at 310px.
+    */
+
+    #introCover.move-right img {
       transform:
+        translateX(min(21vw, 310px))
         rotate(0deg)
-        scale(.98);
+        scale(1);
     }
 
     #introCover.hide {
-      opacity: 0;
       pointer-events: none;
     }
 
-    /* REAL BOOK */
+    #introCover.hide img {
+      opacity: 0;
+    }
+
+    /* --------------------------------
+       REAL BOOK
+    -------------------------------- */
 
     #bookStage {
       position: absolute;
@@ -101,17 +108,13 @@
       opacity: 0;
       pointer-events: none;
 
-      transform: scale(.98);
-
       transition:
-        opacity .5s ease,
-        transform .65s cubic-bezier(.22,.8,.25,1);
+        opacity .25s ease;
     }
 
     #bookStage.visible {
       opacity: 1;
       pointer-events: auto;
-      transform: scale(1);
     }
 
     #book {
@@ -127,21 +130,35 @@
     .page img {
       width: 100%;
       height: 100%;
-      display: block;
       object-fit: contain;
+      display: block;
       background: #fff;
+
       user-select: none;
       -webkit-user-drag: none;
     }
 
+    /* --------------------------------
+       MOBILE
+    -------------------------------- */
+
     @media (max-width: 800px) {
+
       #introCover img {
         width: min(72vw, 520px);
+      }
+
+      #introCover.move-right img {
+        transform:
+          translateX(min(36vw, 260px))
+          rotate(0deg)
+          scale(1);
       }
 
       #bookStage {
         padding: 3vh 2vw;
       }
+
     }
   </style>
 </head>
@@ -150,11 +167,15 @@
 
   <div class="viewer">
 
+    <!-- INTRO COVER -->
+
     <div id="introCover">
       <img
         src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg"
         alt="Portfolio cover">
     </div>
+
+    <!-- REAL FLIPBOOK -->
 
     <div id="bookStage">
       <div id="book">
@@ -361,53 +382,44 @@
   </div>
 
   <script>
-    const introCover =
-      document.getElementById("introCover");
+    const introCover = document.getElementById("introCover");
+    const bookStage = document.getElementById("bookStage");
+    const bookElement = document.getElementById("book");
 
-    const bookStage =
-      document.getElementById("bookStage");
+    const pageFlip = new St.PageFlip(bookElement, {
+      width: 720,
+      height: 509,
 
-    const bookElement =
-      document.getElementById("book");
+      size: "stretch",
 
-    const pageFlip =
-      new St.PageFlip(bookElement, {
+      minWidth: 300,
+      maxWidth: 850,
 
-        width: 720,
-        height: 509,
+      minHeight: 212,
+      maxHeight: 601,
 
-        size: "stretch",
+      showCover: true,
 
-        minWidth: 300,
-        maxWidth: 850,
+      drawShadow: true,
+      maxShadowOpacity: 0.25,
 
-        minHeight: 212,
-        maxHeight: 601,
+      flippingTime: 1350,
 
-        showCover: true,
+      mobileScrollSupport: false,
 
-        drawShadow: true,
+      usePortrait: true,
 
-        maxShadowOpacity: 0.20,
+      startPage: 0,
 
-        flippingTime: 1200,
+      clickEventForward: true,
+      useMouseEvents: true,
 
-        mobileScrollSupport: false,
+      swipeDistance: 25,
 
-        usePortrait: true,
+      showPageCorners: true,
 
-        startPage: 0,
-
-        clickEventForward: true,
-
-        useMouseEvents: true,
-
-        swipeDistance: 25,
-
-        showPageCorners: true,
-
-        disableFlipByClick: false
-      });
+      disableFlipByClick: false
+    });
 
     pageFlip.loadFromHTML(
       document.querySelectorAll(".page")
@@ -416,60 +428,65 @@
     let opened = false;
 
     function openPortfolio() {
-
       if (opened) return;
 
       opened = true;
 
-      // 1. straighten the centered cover
-      introCover.classList.add("straight");
+      /*
+        1. Closed book moves from
+        exact center -> right side
+      */
+      introCover.classList.add("move-right");
 
-      // 2. reveal the real book in the same center position
+      /*
+        2. Reveal the real PageFlip cover
+        once the intro has nearly reached
+        the right-hand page position
+      */
       setTimeout(() => {
         bookStage.classList.add("visible");
-      }, 450);
+      }, 850);
 
-      // 3. fade the fake intro cover out
+      /*
+        3. Fade away fake intro cover.
+        The real PageFlip cover is now underneath
+        in virtually the same position.
+      */
       setTimeout(() => {
         introCover.classList.add("hide");
-      }, 650);
+      }, 1020);
 
-      // 4. let the REAL book open naturally
+      /*
+        4. Open cover LEFT into the full spread.
+      */
       setTimeout(() => {
         pageFlip.flipNext("bottom");
-      }, 850);
+      }, 1080);
     }
 
-    introCover.addEventListener(
-      "click",
-      openPortfolio
-    );
+    introCover.addEventListener("click", openPortfolio);
 
-    document.addEventListener(
-      "keydown",
-      event => {
+    document.addEventListener("keydown", event => {
 
-        if (!opened) {
-
-          if (
-            event.key === "Enter" ||
-            event.key === "ArrowRight"
-          ) {
-            openPortfolio();
-          }
-
-          return;
+      if (!opened) {
+        if (
+          event.key === "Enter" ||
+          event.key === "ArrowRight"
+        ) {
+          openPortfolio();
         }
 
-        if (event.key === "ArrowRight") {
-          pageFlip.flipNext("bottom");
-        }
-
-        if (event.key === "ArrowLeft") {
-          pageFlip.flipPrev("bottom");
-        }
+        return;
       }
-    );
+
+      if (event.key === "ArrowRight") {
+        pageFlip.flipNext("bottom");
+      }
+
+      if (event.key === "ArrowLeft") {
+        pageFlip.flipPrev("bottom");
+      }
+    });
   </script>
 
 </body>
