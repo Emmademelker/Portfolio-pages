@@ -1,239 +1,646 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emma de Melker Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<title>Emma de Melker — Portfolio</title>
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+<style>
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .viewer {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffffff;
-    }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-    .book {
-      position: relative;
-      width: min(88vw, 1200px);
-      aspect-ratio: 1.414 / 1;
-      perspective: 2500px;
-    }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .page {
-      position: absolute;
-      inset: 0;
-      background: #ffffff;
-      transform-origin: left center;
-      transition: transform 0.85s cubic-bezier(.65,.05,.36,1),
-                  opacity 0.3s ease;
-      backface-visibility: hidden;
-      box-shadow: 0 18px 50px rgba(0,0,0,0.10);
-      cursor: pointer;
-      overflow: hidden;
-    }
+.viewer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
 
-    .page img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-drag: none;
-      background: white;
-    }
+/* BOOK */
 
-    .page.flipped {
-      transform: rotateY(-180deg);
-      pointer-events: none;
-    }
+.book {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 3000px;
 
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 500;
-      border: none;
-      background: none;
-      font-size: 32px;
-      font-weight: 300;
-      cursor: pointer;
-      color: #111;
-      opacity: 0.45;
-      padding: 20px;
-      transition: opacity 0.2s ease;
-    }
+  transition:
+    width .6s ease,
+    aspect-ratio .6s ease;
+}
 
-    .arrow:hover {
-      opacity: 1;
-    }
+/* CLOSED COVER */
 
-    .arrow-left {
-      left: 1.5%;
-    }
+.book.cover-mode {
+  width: min(72vw, 1120px);
+  aspect-ratio: 1.414 / 1;
+}
 
-    .arrow-right {
-      right: 1.5%;
-    }
+/* OPEN BOOK */
 
-    .counter {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      color: #111;
-      opacity: 0.4;
-      z-index: 500;
-    }
+.book.spread-mode {
+  width: min(94vw, 1700px);
+  aspect-ratio: 2.828 / 1;
+}
 
-    @media (max-width: 700px) {
-      .book {
-        width: 94vw;
-      }
+.page {
+  position: relative;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
 
-      .arrow {
-        font-size: 22px;
-        padding: 10px;
-      }
+.page img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #fff;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
 
-      .arrow-left {
-        left: 0;
-      }
+/* COVER */
 
-      .arrow-right {
-        right: 0;
-      }
-    }
-  </style>
+.cover-page {
+  width: 100%;
+  box-shadow: 0 14px 35px rgba(0,0,0,.09);
+  transform-origin: left center;
+}
+
+/* OPEN SPREAD */
+
+.spread {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.left-page,
+.right-page {
+  width: 50%;
+}
+
+.left-page {
+  transform-origin: right center;
+}
+
+.right-page {
+  transform-origin: left center;
+}
+
+/* CENTRE FOLD */
+
+.spread::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.03),
+    rgba(0,0,0,.12),
+    rgba(0,0,0,.03)
+  );
+  z-index: 20;
+}
+
+/* SPINE SHADOW */
+
+.left-page::after,
+.right-page::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  pointer-events: none;
+}
+
+.left-page::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    rgba(0,0,0,.07),
+    transparent
+  );
+}
+
+.right-page::after {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,.07),
+    transparent
+  );
+}
+
+/* PAGE TURN */
+
+.turn-next {
+  animation: turnNext .72s cubic-bezier(.65,.05,.36,1);
+}
+
+@keyframes turnNext {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(.93);
+  }
+
+  100% {
+    transform: rotateY(-180deg);
+    filter: brightness(.88);
+  }
+}
+
+.turn-prev {
+  animation: turnPrev .72s cubic-bezier(.65,.05,.36,1);
+}
+
+@keyframes turnPrev {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(.93);
+  }
+
+  100% {
+    transform: rotateY(180deg);
+    filter: brightness(.88);
+  }
+}
+
+/* ARROWS */
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 29px;
+  font-weight: 300;
+  padding: 24px;
+  cursor: pointer;
+  color: #111;
+  opacity: .38;
+  z-index: 1000;
+  transition: opacity .2s ease;
+}
+
+.arrow:hover {
+  opacity: .9;
+}
+
+.arrow-left {
+  left: 1%;
+}
+
+.arrow-right {
+  right: 1%;
+}
+
+/* PAGE COUNTER */
+
+.counter {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: #111;
+  opacity: .32;
+  z-index: 1000;
+}
+
+/* CLICK AREAS */
+
+.hit-left,
+.hit-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 100;
+}
+
+.hit-left {
+  left: 0;
+}
+
+.hit-right {
+  right: 0;
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+  .book.cover-mode {
+    width: 92vw;
+  }
+
+  .book.spread-mode {
+    width: 98vw;
+  }
+
+  .arrow {
+    font-size: 21px;
+    padding: 8px;
+  }
+
+  .arrow-left {
+    left: 0;
+  }
+
+  .arrow-right {
+    right: 0;
+  }
+
+  .counter {
+    bottom: 5px;
+    font-size: 8px;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-  <div class="viewer">
+<div class="viewer">
 
-    <button class="arrow arrow-left" id="prev">←</button>
+  <button
+    class="arrow arrow-left"
+    id="prev"
+    aria-label="Previous pages">
+    ←
+  </button>
 
-    <div class="book" id="book"></div>
-
-    <button class="arrow arrow-right" id="next">→</button>
-
-    <div class="counter" id="counter">01 / 49</div>
-
+  <div
+    class="book cover-mode"
+    id="book">
   </div>
 
-  <script>
-    const TOTAL_PAGES = 49;
+  <button
+    class="arrow arrow-right"
+    id="next"
+    aria-label="Next pages">
+    →
+  </button>
 
-    const baseURL =
-      "https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/";
+  <div
+    class="counter"
+    id="counter">
+    01 / 49
+  </div>
 
-    const book = document.getElementById("book");
-    const counter = document.getElementById("counter");
+</div>
 
-    let currentPage = 0;
-    const pages = [];
+<script>
 
-    for (let i = 1; i <= TOTAL_PAGES; i++) {
-      const page = document.createElement("div");
-      page.className = "page";
+const TOTAL_PAGES = 49;
 
-      const img = document.createElement("img");
-      img.src = baseURL + i + ".jpg";
-      img.alt = "Portfolio page " + i;
+const BASE_URL =
+  "https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/";
 
-      page.appendChild(img);
-      book.appendChild(page);
+const book =
+  document.getElementById("book");
 
-      pages.push(page);
+const counter =
+  document.getElementById("counter");
+
+let spreadIndex = 0;
+let animating = false;
+
+/*
+
+0 = cover page 1
+
+1 = pages 2 + 3
+2 = pages 4 + 5
+3 = pages 6 + 7
+
+...
+
+24 = pages 48 + 49
+
+*/
+
+const TOTAL_SPREADS = 25;
+
+
+function imageURL(page) {
+  return BASE_URL + page + ".jpg";
+}
+
+
+function renderCover() {
+
+  book.className = "book cover-mode";
+
+  book.innerHTML = `
+
+    <div class="page cover-page">
+
+      <img
+        src="${imageURL(1)}"
+        alt="Portfolio cover">
+
+    </div>
+
+    <div
+      class="hit-right"
+      id="coverNext">
+    </div>
+
+  `;
+
+  document
+    .getElementById("coverNext")
+    .addEventListener(
+      "click",
+      nextSpread
+    );
+
+  counter.textContent = "01 / 49";
+}
+
+
+function renderSpread(index) {
+
+  const leftPage = index * 2;
+  const rightPage = leftPage + 1;
+
+  book.className = "book spread-mode";
+
+  book.innerHTML = `
+
+    <div class="spread">
+
+      <div
+        class="page left-page"
+        id="leftPage">
+
+        <img
+          src="${imageURL(leftPage)}"
+          alt="Portfolio page ${leftPage}">
+
+      </div>
+
+      <div
+        class="page right-page"
+        id="rightPage">
+
+        <img
+          src="${imageURL(rightPage)}"
+          alt="Portfolio page ${rightPage}">
+
+      </div>
+
+      <div
+        class="hit-left"
+        id="spreadPrev">
+      </div>
+
+      <div
+        class="hit-right"
+        id="spreadNext">
+      </div>
+
+    </div>
+
+  `;
+
+  document
+    .getElementById("spreadPrev")
+    .addEventListener(
+      "click",
+      previousSpread
+    );
+
+  document
+    .getElementById("spreadNext")
+    .addEventListener(
+      "click",
+      nextSpread
+    );
+
+  counter.textContent =
+    String(leftPage).padStart(2,"0") +
+    " — " +
+    String(rightPage).padStart(2,"0");
+}
+
+
+function renderCurrent() {
+
+  if (spreadIndex === 0) {
+    renderCover();
+  } else {
+    renderSpread(spreadIndex);
+  }
+}
+
+
+function nextSpread() {
+
+  if (
+    animating ||
+    spreadIndex >= TOTAL_SPREADS - 1
+  ) {
+    return;
+  }
+
+  animating = true;
+
+  if (spreadIndex === 0) {
+
+    const cover =
+      document.querySelector(".cover-page");
+
+    cover.classList.add("turn-next");
+
+    setTimeout(() => {
+
+      spreadIndex++;
+      renderCurrent();
+      animating = false;
+
+    }, 620);
+
+    return;
+  }
+
+  const right =
+    document.getElementById("rightPage");
+
+  right.classList.add("turn-next");
+
+  setTimeout(() => {
+
+    spreadIndex++;
+    renderCurrent();
+    animating = false;
+
+  }, 620);
+}
+
+
+function previousSpread() {
+
+  if (
+    animating ||
+    spreadIndex <= 0
+  ) {
+    return;
+  }
+
+  animating = true;
+
+  if (spreadIndex === 1) {
+
+    const left =
+      document.getElementById("leftPage");
+
+    left.classList.add("turn-prev");
+
+    setTimeout(() => {
+
+      spreadIndex = 0;
+      renderCurrent();
+      animating = false;
+
+    }, 620);
+
+    return;
+  }
+
+  const left =
+    document.getElementById("leftPage");
+
+  left.classList.add("turn-prev");
+
+  setTimeout(() => {
+
+    spreadIndex--;
+    renderCurrent();
+    animating = false;
+
+  }, 620);
+}
+
+
+document
+  .getElementById("next")
+  .addEventListener(
+    "click",
+    nextSpread
+  );
+
+
+document
+  .getElementById("prev")
+  .addEventListener(
+    "click",
+    previousSpread
+  );
+
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "ArrowRight") {
+      nextSpread();
     }
 
-    pages.forEach((page, index) => {
-      page.style.zIndex = TOTAL_PAGES - index;
-    });
+    if (event.key === "ArrowLeft") {
+      previousSpread();
+    }
+  }
+);
 
-    function updateCounter() {
-      counter.textContent =
-        String(currentPage + 1).padStart(2, "0") +
-        " / " +
-        String(TOTAL_PAGES).padStart(2, "0");
+
+/* SWIPE */
+
+let startX = null;
+
+book.addEventListener(
+  "pointerdown",
+  event => {
+    startX = event.clientX;
+  }
+);
+
+
+book.addEventListener(
+  "pointerup",
+  event => {
+
+    if (startX === null) {
+      return;
     }
 
-    function nextPage() {
-      if (currentPage >= TOTAL_PAGES - 1) return;
+    const movement =
+      event.clientX - startX;
 
-      pages[currentPage].classList.add("flipped");
-      currentPage++;
-
-      updateCounter();
+    if (movement < -70) {
+      nextSpread();
     }
 
-    function previousPage() {
-      if (currentPage <= 0) return;
-
-      currentPage--;
-
-      pages[currentPage].classList.remove("flipped");
-
-      updateCounter();
+    if (movement > 70) {
+      previousSpread();
     }
 
-    document.getElementById("next").addEventListener("click", nextPage);
-    document.getElementById("prev").addEventListener("click", previousPage);
+    startX = null;
+  }
+);
 
-    pages.forEach(page => {
-      page.addEventListener("click", nextPage);
-    });
 
-    document.addEventListener("keydown", event => {
-      if (event.key === "ArrowRight") nextPage();
-      if (event.key === "ArrowLeft") previousPage();
-    });
+renderCurrent();
 
-    let startX = null;
-
-    book.addEventListener("pointerdown", event => {
-      startX = event.clientX;
-    });
-
-    book.addEventListener("pointerup", event => {
-      if (startX === null) return;
-
-      const movement = event.clientX - startX;
-
-      if (movement < -60) nextPage();
-      if (movement > 60) previousPage();
-
-      startX = null;
-    });
-
-    updateCounter();
-  </script>
+</script>
 
 </body>
 </html>
