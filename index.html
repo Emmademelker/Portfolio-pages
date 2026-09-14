@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Emma de Melker — Portfolio</title>
 
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
@@ -15,11 +16,11 @@
     html,
     body {
       margin: 0;
+      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
@@ -29,20 +30,57 @@
     }
 
     .viewer {
-      position: relative;
       width: 100vw;
       height: 100vh;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       background: #ffffff;
-      padding: 5vh 7vw;
+
+      padding: 6vh 7vw;
     }
+
+    /*
+    MAIN BOOK
+    */
 
     #book {
       width: 100%;
       height: 100%;
+
+      transition:
+        transform 0.95s cubic-bezier(.22,.8,.3,1),
+        opacity 0.6s ease;
+
+      transform-origin: center center;
     }
+
+    /*
+    CLOSED INTRO STATE
+    */
+
+    #book.intro {
+      transform: rotate(-4deg) scale(0.82);
+      cursor: pointer;
+    }
+
+    #book.intro:hover {
+      transform: rotate(-2.5deg) scale(0.85);
+    }
+
+    /*
+    WHEN USER CLICKS THE COVER
+    */
+
+    #book.opening {
+      transform: rotate(0deg) scale(1);
+    }
+
+    /*
+    PAGE STYLING
+    */
 
     .page {
       background: #ffffff;
@@ -52,75 +90,37 @@
     .page img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+
       display: block;
+
+      object-fit: contain;
+
       background: #ffffff;
+
       user-select: none;
       -webkit-user-drag: none;
     }
 
-    .cover {
-      background: #ffffff;
-    }
-
-    .nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1000;
-      border: 0;
-      background: transparent;
-      font-size: 28px;
-      font-weight: 300;
-      cursor: pointer;
-      color: #111;
-      opacity: .35;
-      padding: 20px;
-      transition: opacity .2s ease;
-    }
-
-    .nav:hover {
-      opacity: .9;
-    }
-
-    #prev {
-      left: 1.2%;
-    }
-
-    #next {
-      right: 1.2%;
-    }
-
-    .counter {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      letter-spacing: .13em;
-      color: #111;
-      opacity: .35;
-      z-index: 1000;
-    }
+    /*
+    MOBILE
+    */
 
     @media (max-width: 800px) {
+
       .viewer {
-        padding: 3vh 3vw;
+        padding: 3vh 2vw;
       }
 
-      .nav {
-        font-size: 21px;
-        padding: 8px;
+      #book.intro {
+        transform: rotate(-3deg) scale(0.9);
       }
 
-      #prev {
-        left: 0;
+      #book.intro:hover {
+        transform: rotate(-2deg) scale(0.92);
       }
 
-      #next {
-        right: 0;
-      }
     }
+
   </style>
 </head>
 
@@ -128,10 +128,9 @@
 
   <div class="viewer">
 
-    <button class="nav" id="prev" aria-label="Previous page">←</button>
+    <div id="book" class="intro">
 
-    <div id="book">
-      <div class="page cover" data-density="hard">
+      <div class="page" data-density="hard">
         <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg">
       </div>
 
@@ -326,95 +325,135 @@
       <div class="page" data-density="hard">
         <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/49.jpg">
       </div>
+
     </div>
-
-    <button class="nav" id="next" aria-label="Next page">→</button>
-
-    <div class="counter" id="counter">01 / 49</div>
 
   </div>
 
   <script>
-    const bookElement = document.getElementById("book");
 
-    const pageFlip = new St.PageFlip(bookElement, {
-      width: 720,
-      height: 509,
+    const bookElement =
+      document.getElementById("book");
 
-      size: "stretch",
+    let firstOpen = true;
 
-      minWidth: 300,
-      maxWidth: 850,
+    const pageFlip =
+      new St.PageFlip(bookElement, {
 
-      minHeight: 212,
-      maxHeight: 601,
+        width: 720,
+        height: 509,
 
-      maxShadowOpacity: 0.22,
+        size: "stretch",
 
-      showCover: true,
+        minWidth: 300,
+        maxWidth: 850,
 
-      mobileScrollSupport: false,
+        minHeight: 212,
+        maxHeight: 601,
 
-      usePortrait: true,
+        showCover: true,
 
-      startPage: 0,
+        drawShadow: true,
 
-      drawShadow: true,
+        maxShadowOpacity: 0.20,
 
-      flippingTime: 1150,
+        flippingTime: 1200,
 
-      clickEventForward: true,
+        mobileScrollSupport: false,
 
-      useMouseEvents: true,
+        usePortrait: true,
 
-      swipeDistance: 30,
+        startPage: 0,
 
-      showPageCorners: true,
+        clickEventForward: true,
 
-      disableFlipByClick: false
-    });
+        useMouseEvents: true,
+
+        swipeDistance: 25,
+
+        showPageCorners: true,
+
+        disableFlipByClick: false
+
+      });
+
 
     pageFlip.loadFromHTML(
       document.querySelectorAll(".page")
     );
 
-    const counter =
-      document.getElementById("counter");
 
-    pageFlip.on("flip", (event) => {
-      const current =
-        event.data + 1;
+    function openBook() {
 
-      counter.textContent =
-        String(current).padStart(2, "0") +
-        " / 49";
-    });
+      if (!firstOpen) {
+        return;
+      }
 
-    document
-      .getElementById("next")
-      .addEventListener("click", () => {
+      firstOpen = false;
+
+      bookElement.classList.remove("intro");
+      bookElement.classList.add("opening");
+
+      setTimeout(() => {
+
         pageFlip.flipNext("bottom");
-      });
 
-    document
-      .getElementById("prev")
-      .addEventListener("click", () => {
-        pageFlip.flipPrev("bottom");
-      });
+      }, 800);
+
+    }
+
+
+    bookElement.addEventListener(
+      "click",
+      () => {
+
+        if (firstOpen) {
+          openBook();
+        }
+
+      }
+    );
+
 
     document.addEventListener(
       "keydown",
-      (event) => {
+      event => {
 
-        if (event.key === "ArrowRight") {
+        if (firstOpen) {
+
+          if (
+            event.key === "Enter" ||
+            event.key === "ArrowRight"
+          ) {
+
+            openBook();
+
+          }
+
+          return;
+        }
+
+
+        if (
+          event.key === "ArrowRight"
+        ) {
+
           pageFlip.flipNext("bottom");
+
         }
 
-        if (event.key === "ArrowLeft") {
+
+        if (
+          event.key === "ArrowLeft"
+        ) {
+
           pageFlip.flipPrev("bottom");
+
         }
+
       }
     );
+
   </script>
 
 </body>
