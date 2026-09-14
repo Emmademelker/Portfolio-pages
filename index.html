@@ -20,7 +20,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #ffffff;
+      background: #fff;
     }
 
     body {
@@ -30,95 +30,110 @@
     }
 
     .viewer {
+      position: relative;
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* INTRO COVER */
+
+    #introCover {
+      position: absolute;
+      inset: 0;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      background: #ffffff;
+      z-index: 20;
 
-      padding: 6vh 7vw;
+      transition:
+        opacity .55s ease,
+        transform .85s cubic-bezier(.22,.8,.3,1);
     }
 
-    /*
-    MAIN BOOK
-    */
+    #introCover img {
+      width: min(42vw, 620px);
+      height: auto;
+      display: block;
+
+      transform: rotate(-4deg);
+      transform-origin: center center;
+
+      cursor: pointer;
+
+      transition:
+        transform .75s cubic-bezier(.22,.8,.3,1);
+    }
+
+    #introCover:hover img {
+      transform: rotate(-2deg) scale(1.02);
+    }
+
+    #introCover.straight img {
+      transform: rotate(0deg) scale(1);
+    }
+
+    #introCover.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* FLIPBOOK */
+
+    #bookStage {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 5vh 7vw;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition: opacity .6s ease;
+    }
+
+    #bookStage.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     #book {
       width: 100%;
       height: 100%;
-
-      transition:
-        transform 0.95s cubic-bezier(.22,.8,.3,1),
-        opacity 0.6s ease;
-
-      transform-origin: center center;
     }
-
-    /*
-    CLOSED INTRO STATE
-    */
-
-    #book.intro {
-      transform: rotate(-4deg) scale(0.82);
-      cursor: pointer;
-    }
-
-    #book.intro:hover {
-      transform: rotate(-2.5deg) scale(0.85);
-    }
-
-    /*
-    WHEN USER CLICKS THE COVER
-    */
-
-    #book.opening {
-      transform: rotate(0deg) scale(1);
-    }
-
-    /*
-    PAGE STYLING
-    */
 
     .page {
-      background: #ffffff;
+      background: #fff;
       overflow: hidden;
     }
 
     .page img {
       width: 100%;
       height: 100%;
-
-      display: block;
-
       object-fit: contain;
-
-      background: #ffffff;
+      display: block;
+      background: #fff;
 
       user-select: none;
       -webkit-user-drag: none;
     }
 
-    /*
-    MOBILE
-    */
-
     @media (max-width: 800px) {
 
-      .viewer {
+      #introCover img {
+        width: min(72vw, 520px);
+      }
+
+      #bookStage {
         padding: 3vh 2vw;
       }
-
-      #book.intro {
-        transform: rotate(-3deg) scale(0.9);
-      }
-
-      #book.intro:hover {
-        transform: rotate(-2deg) scale(0.92);
-      }
-
     }
 
   </style>
@@ -128,202 +143,212 @@
 
   <div class="viewer">
 
-    <div id="book" class="intro">
+    <div id="introCover">
+      <img
+        src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg"
+        alt="Portfolio cover">
+    </div>
 
-      <div class="page" data-density="hard">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg">
-      </div>
+    <div id="bookStage">
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/2.jpg">
-      </div>
+      <div id="book">
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/3.jpg">
-      </div>
+        <div class="page" data-density="hard">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/1.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/4.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/2.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/5.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/3.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/6.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/4.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/7.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/5.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/8.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/6.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/9.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/7.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/10.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/8.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/11.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/9.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/12.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/10.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/13.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/11.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/14.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/12.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/15.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/13.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/16.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/14.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/17.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/15.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/18.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/16.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/19.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/17.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/20.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/18.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/21.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/19.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/22.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/20.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/23.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/21.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/24.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/22.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/25.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/23.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/26.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/24.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/27.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/25.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/28.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/26.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/29.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/27.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/30.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/28.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/31.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/29.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/32.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/30.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/33.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/31.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/34.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/32.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/35.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/33.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/36.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/34.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/37.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/35.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/38.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/36.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/39.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/37.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/40.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/38.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/41.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/39.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/42.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/40.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/43.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/41.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/44.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/42.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/45.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/43.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/46.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/44.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/47.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/45.jpg">
+        </div>
 
-      <div class="page">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/48.jpg">
-      </div>
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/46.jpg">
+        </div>
 
-      <div class="page" data-density="hard">
-        <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/49.jpg">
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/47.jpg">
+        </div>
+
+        <div class="page">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/48.jpg">
+        </div>
+
+        <div class="page" data-density="hard">
+          <img src="https://raw.githubusercontent.com/Emmademelker/Portfolio-pages/main/49.jpg">
+        </div>
+
       </div>
 
     </div>
@@ -332,10 +357,15 @@
 
   <script>
 
+    const introCover =
+      document.getElementById("introCover");
+
+    const bookStage =
+      document.getElementById("bookStage");
+
     const bookElement =
       document.getElementById("book");
 
-    let firstOpen = true;
 
     const pageFlip =
       new St.PageFlip(bookElement, {
@@ -383,35 +413,40 @@
     );
 
 
-    function openBook() {
+    let opened = false;
 
-      if (!firstOpen) {
+
+    function openPortfolio() {
+
+      if (opened) {
         return;
       }
 
-      firstOpen = false;
+      opened = true;
 
-      bookElement.classList.remove("intro");
-      bookElement.classList.add("opening");
+      introCover.classList.add("straight");
+
+      setTimeout(() => {
+
+        introCover.classList.add("hide");
+
+        bookStage.classList.add("visible");
+
+      }, 650);
+
 
       setTimeout(() => {
 
         pageFlip.flipNext("bottom");
 
-      }, 800);
+      }, 1100);
 
     }
 
 
-    bookElement.addEventListener(
+    introCover.addEventListener(
       "click",
-      () => {
-
-        if (firstOpen) {
-          openBook();
-        }
-
-      }
+      openPortfolio
     );
 
 
@@ -419,36 +454,25 @@
       "keydown",
       event => {
 
-        if (firstOpen) {
+        if (!opened) {
 
           if (
             event.key === "Enter" ||
             event.key === "ArrowRight"
           ) {
-
-            openBook();
-
+            openPortfolio();
           }
 
           return;
         }
 
 
-        if (
-          event.key === "ArrowRight"
-        ) {
-
+        if (event.key === "ArrowRight") {
           pageFlip.flipNext("bottom");
-
         }
 
-
-        if (
-          event.key === "ArrowLeft"
-        ) {
-
+        if (event.key === "ArrowLeft") {
           pageFlip.flipPrev("bottom");
-
         }
 
       }
